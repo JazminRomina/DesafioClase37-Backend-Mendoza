@@ -1,0 +1,37 @@
+<h1>List of Products</h1>
+
+<div>
+{{#if session}}
+        <p class="sessionWelcomeProducts">Welcome {{user.first_name}} {{user.last_name}}!</p>
+        <p class="sessionWelcomeProducts">Your rol is: {{user.rol}} </p>
+        <p data-cart-id="{{user.cart}}" class="sessionWelcomeProducts">Cart ID: {{user.cart}} </p>
+        <a class="sessionWelcomeProducts" href="/carts/{{user.cart}}">Cart</a>
+{{/if}}
+</div>
+
+<div>
+    {{#each prods}}
+        <div class="prodsCardsViews">
+            <h2>{{this.title}}</h2>
+            <p>${{this.price}}</p>
+            <p>Description: {{this.description}}</p>
+            <p>Category: {{this.category}}</p>
+            <p>Stock: {{this.stock}}</p>
+            <button type="button" class="btnAddToCart" data-product-id="{{this._id}}"> Add to Cart</button>
+        </div>
+    {{/each}}
+</div>
+
+<div>
+    {{#if hasPrevPage}}
+    <a href="/products?page={{prevPage}}"> back </a>
+    {{/if}}
+
+    {{#if hasNextPage}}
+        <a href="/products?page={{nextPage}}"> next </a>
+    {{/if}}
+
+    <p>Page {{currentPage}} of {{totalPages}} </p>
+</div>
+
+<script src="js/prods.js"></script>

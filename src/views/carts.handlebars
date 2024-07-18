@@ -1,0 +1,39 @@
+<h1 data-cart-id="{{cartId}}">Carrito con ID: {{cartId}}</h1>
+
+{{#each productsCart}}
+<div class="productosCartViews">
+    <p>ID: {{this.product._id}}</p>
+    <p>Title: {{this.product.title}}</p>
+    <p>Quantity: {{this.quantity}}</p>
+    <p>Final Price: ${{this.finalPrice}}</p>
+</div>
+{{/each}}
+
+<div class="divcartsBuy">
+    <p>Total Price: ${{finalTotalPrice}}</p>
+    <button class="buyCart"> Purchase </button>
+</div>
+
+<script>
+    function buyCart(event) {
+    event.preventDefault()
+    const cartId = document.querySelector('[data-cart-id]').getAttribute('data-cart-id')
+    fetch(`/api/carts/${cartId}/purchase`, {
+        method: 'POST'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('There is a problem with buying this cart.')
+        }
+        location.reload()
+    })
+    .catch(error => {
+        console.error('Error:', error)
+    })
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const pressbtnBuy = document.querySelector('.buyCart')
+    pressbtnBuy.addEventListener('click', buyCart)
+})
+</script>
