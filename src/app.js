@@ -36,7 +36,7 @@ app.use(session({
     resave: true,
     saveUninitialized : true,
     store: MongoStore.create({
-        mongoUrl: mongo_url , ttl: 100
+        mongoUrl: mongo_url , ttl: 1800
     })
 }))
 app.use(passport.initialize())
@@ -64,9 +64,15 @@ io.on("connection", (socket) => {
         await ProductService.addProducts(data)
     })
     socket.on('deleteProd', async(data) => {
-        const productToDelete = await ProductService.findProductByCode(data)
-        await ProductService.deleteProduct(productToDelete._id)
-        socket.emit("prodsJson", '/api/products')
+        const productToDelete = await ProductService.findProductByCode(data.code)
+        if(productToDelete && data.owner === "Admin"){
+            await ProductService.deleteProduct(productToDelete._id)
+            socket.emit("prodsJson", '/api/products')
+        }
+        else if(productToDelete && productToDelete.owner === data.owner){
+            await ProductService.deleteProduct(productToDelete._id)
+            socket.emit("prodsJson", '/api/products')
+        }
     })
 
     socket.emit("prodsJson", '/api/products')

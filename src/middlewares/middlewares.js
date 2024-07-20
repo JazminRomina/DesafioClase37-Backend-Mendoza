@@ -5,7 +5,7 @@ export const rolAuthenticationAdmin = async(req, res, next) => {
         return res.redirect("/login")
     }
     const DTOusers = new DTOuser(req.session.user)
-    if(DTOusers.rol == "Admin"){
+    if(DTOusers.rol == "Admin" || DTOusers.rol == "Premium"){
         return next()
     }
     return res.redirect("profile")

@@ -1,4 +1,7 @@
 const socket= io()
+const rol = document.getElementById("rol").textContent
+const email = document.getElementById("email").textContent
+const owner = (rol === "Premium") ? email : (rol === "Admin") ? "Admin" : undefined
 
 socket.emit('mensaje', 'Cliente conectado')
 
@@ -13,14 +16,15 @@ document.getElementById('btnSend').addEventListener('click', () => {
         code: document.getElementById('code').value,
         stock: Number(document.getElementById('stock').value),
         status: estadoBooleano,
-        category: document.getElementById('category').value
+        category: document.getElementById('category').value,
+        owner: owner
     }
     if(estadoBooleano === true && product.title && product.description && product.price && product.code && product.category && product.stock){
         socket.emit('prod', product)
         addProduct(product)
     }
     else if(estadoBooleano === false && product.code){
-        socket.emit('deleteProd', product.code)
+        socket.emit('deleteProd', {code: product.code, owner: owner})
     }
 })
 

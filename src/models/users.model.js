@@ -6,6 +6,10 @@ const usersSchema = new mongoose.Schema({
     email: {type: String, required: true, index: true, unique: true},
     password: {type: String},
     age: {type: Number},
+    resetToken: {
+        token: String,
+        expire: Date
+    },
     rol: {type: String},
     cart: {
         type: mongoose.Schema.Types.ObjectId

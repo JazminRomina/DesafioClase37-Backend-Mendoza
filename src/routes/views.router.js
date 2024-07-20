@@ -15,5 +15,8 @@ router.get('/login', viewController.login)
 router.get('/register', viewController.register)
 router.get('/profile', viewController.profile)
 router.get('/loggertest', viewController.logger)
+router.get('/requestPasswordReset', viewController.renderEmailPass)
+router.get('/reset-password', viewController.renderResetPass)
+router.get('/confirmacion-envio', viewController.renderConfirmationEmail)
 
 export default router

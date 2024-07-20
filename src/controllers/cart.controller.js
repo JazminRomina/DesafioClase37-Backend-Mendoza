@@ -3,6 +3,9 @@ import usersModel from "../models/users.model.js"
 import { CartService } from "../services/carts.service.js"
 import { ProductService } from "../services/products.service.js"
 import { logger } from "../utils/logger.js"
+import { EmailManager } from "../services/email.js"
+
+const emailManager = new EmailManager()
 
 export class CartsController {
     newCart = async(req, res) => {
@@ -31,11 +34,19 @@ export class CartsController {
 
     addProdtotheCart = async(req, res) => {
         try{
+            const user = req.user
             let cid = req.params.cid
             let pid = req.params.pid
-            await CartService.addProductToTheCart(cid, pid)
-            res.status(200).json({ message: 'The product has been added.'})
-            logger.info('We add this product to the cart.')
+            const findIdProd = await ProductService.findIdProd(pid)
+            const product = findIdProd[0]
+            if(product.owner == user.email){
+                return res.status(404).json({ message: 'You cannot buy your own product.'})
+            }
+            else {
+                await CartService.addProductToTheCart(cid, pid)
+                res.status(200).json({ message: 'The product has been added.'})
+                logger.info('We add this product to the cart.')
+            }
         }
         catch(error){
             res.status(500).json('There is an error in the server that it did not let us add the product in the cart.')
@@ -131,12 +142,13 @@ export class CartsController {
                 amount: totalPrice
             })
             await getTicket.save()
+            await emailManager.sendEmailBuyCart(cartUser.email, cartUser.first_name, getTicket.code)
 
             const userCart = await CartService.findId(cid)
             userCart.products = notAvailable
             await userCart.save()
 
-            res.send('Purchase')
+            res.send('You buy this cart.')
         }
         catch(error){
             res.status(500).json({ error: 'There is an error in the server.' })

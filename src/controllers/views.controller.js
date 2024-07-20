@@ -18,8 +18,9 @@ export class ViewsController{
     }
 
     realTimeProds = async(req, res) => {
+        const user = req.user
         const allProds = await productsModel.find().lean()
-        res.render("realTimeProducts", {prods: allProds})
+        res.render("realTimeProducts", {prods: allProds, rol: user.rol, email: user.email})
     }
 
     chat = async (req, res) => {
@@ -80,7 +81,9 @@ export class ViewsController{
         if(!req.session.login){
             return res.redirect("/login")
         }
-        res.render("profile", {user: new DTOuser(req.session.user)})
+        req.session.user.rol = req.user.rol
+        const userDTO = new DTOuser(req.session.user)
+        res.render("profile", { user: userDTO})
     }
 
     logger = async(req, res) => {
@@ -92,5 +95,17 @@ export class ViewsController{
         req.logger.debug("Mensaje DEBUG")
 
         res.send("Test de Logs")
+    }
+
+    renderEmailPass = async(req, res) => {
+        res.render("getemailpass")
+    }
+
+    renderResetPass = async(req, res) => {
+        res.render("resetpass")
+    }
+
+    renderConfirmationEmail = async(req, res) => {
+        res.render("confirmacion-envio")
     }
 }

@@ -4,6 +4,8 @@ import customError from "../services/errors/custom-error.js"
 import generateErrorProds from "../services/errors/infoProds.js"
 import { Errors } from "../services/errors/enum.js"
 import { logger } from "../utils/logger.js"
+import DTOuser from "../DTO/user.dto.js"
+import usersModel from "../models/users.model.js"
 
 export class ProductsController {
     prods = async(req, res) => {
